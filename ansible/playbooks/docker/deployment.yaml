@@ -1,6 +1,6 @@
 - name: Deployment of containers on server
   hosts: all
-  become: true
+  become: false
   tasks:
     - name: Run postgres
       community.docker.docker_container:
