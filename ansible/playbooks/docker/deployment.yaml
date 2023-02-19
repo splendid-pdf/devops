@@ -1,0 +1,87 @@
+- name: Deployment of containers on server
+  hosts: all
+  become: true
+  tasks:
+    - name: Run postgres
+      community.docker.docker_container:
+        name: postgres
+        image: postgres:15.1-alpine
+        state: started
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_DB: "common_db"
+          POSTGRES_USER: "user"
+          POSTGRES_PASSWORD: "password"
+          PGDATA: "/var/lib/postgresql/data"
+        volumes:
+          - "/home/data:/var/lib/postgresql/data"
+
+    - name: Run redis
+      community.docker.docker_container:
+        name: redis
+        image: redis
+        state: started
+        pull: true
+        ports:
+          - "6379:6379"
+
+    - name: Pause to let postgres and redis to be deployed
+      pause:
+        seconds: 10
+
+    - name: Run pgadmin
+      community.docker.docker_container:
+        name: pgadmin
+        image: dpage/pgadmin4:6.19
+        state: started
+        ports:
+          - "5050:80"
+        env:
+          PGADMIN_DEFAULT_EMAIL: "main@mail.ru"
+          PGADMIN_DEFAULT_PASSWORD: "password"
+
+    - name: Run config server
+      community.docker.docker_container:
+        name: config-server
+        image: splendidpdf/config-server:0.0.1-SNAPSHOT
+        state: started
+        pull: true
+        ports:
+          - "8888:8888"
+
+    - name: Run user service
+      community.docker.docker_container:
+        name: user-info-service
+        image: splendidpdf/user-info-service:0.0.1-SNAPSHOT
+        state: started
+        pull: true
+        ports:
+          - "8080:8080"
+        env:
+          SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
+          SPRING_CLOUD_CONFIG_LABEL: "develop"
+
+    - name: Run order service
+      community.docker.docker_container:
+        name: order-service
+        image: splendidpdf/order-service:0.0.1-SNAPSHOT
+        state: started
+        pull: true
+        ports:
+          - "8081:8081"
+        env:
+          SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
+          SPRING_CLOUD_CONFIG_LABEL: "develop"
+
+    - name: Run upload service
+      community.docker.docker_container:
+        name: upload-service
+        image: splendidpdf/upload-service:0.0.1-SNAPSHOT
+        state: started
+        pull: true
+        ports:
+          - "9001:9001"
+        env:
+          SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
+          SPRING_CLOUD_CONFIG_LABEL: "develop"
