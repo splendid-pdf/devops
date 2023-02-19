@@ -26,10 +26,6 @@
         ports:
           - "6379:6379"
 
-    - name: Pause to let postgres and redis to be deployed
-      pause:
-        seconds: 10
-
     - name: Run pgadmin
       community.docker.docker_container:
         name: pgadmin
