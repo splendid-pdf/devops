@@ -70,6 +70,42 @@
           SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
           SPRING_CLOUD_CONFIG_LABEL: "develop"
 
+    - name: Run product service
+      community.docker.docker_container:
+        name: product-service
+        image: splendidpdf/product-service:0.0.1-SNAPSHOT
+        state: started
+        pull: true
+        ports:
+          - "9090:9090"
+        env:
+          SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
+          SPRING_CLOUD_CONFIG_LABEL: "develop"
+
+    - name: Run seller service
+      community.docker.docker_container:
+        name: seller-service
+        image: splendidpdf/seller-info-service:0.0.1-SNAPSHOT
+        state: started
+        pull: true
+        ports:
+          - "8085:8085"
+        env:
+          SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
+          SPRING_CLOUD_CONFIG_LABEL: "develop"
+
+    - name: Run review service
+      community.docker.docker_container:
+        name: review-service
+        image: splendidpdf/review-service:0.0.1-SNAPSHOT
+        state: started
+        pull: true
+        ports:
+          - "8082:8082"
+        env:
+          SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
+          SPRING_CLOUD_CONFIG_LABEL: "develop"
+
     - name: Run upload service
       community.docker.docker_container:
         name: upload-service
@@ -78,6 +114,30 @@
         pull: true
         ports:
           - "9001:9001"
+        env:
+          SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
+          SPRING_CLOUD_CONFIG_LABEL: "develop"
+
+    - name: Run auth service
+      community.docker.docker_container:
+        name: authorization-service
+        image: splendidpdf/authorization-server:0.0.1-SNAPSHOT
+        state: started
+        pull: true
+        ports:
+          - "9000:9000"
+        env:
+          SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
+          SPRING_CLOUD_CONFIG_LABEL: "develop"
+
+    - name: Run api gateway service
+      community.docker.docker_container:
+        name: api-gateway-service
+        image: splendidpdf/api-gateway-service:0.0.1-SNAPSHOT
+        state: started
+        pull: true
+        ports:
+          - "7777:7777"
         env:
           SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
           SPRING_CLOUD_CONFIG_LABEL: "develop"
