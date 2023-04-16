@@ -1,28 +1,28 @@
-name: Replace a container of config-server
-hosts: all
-become: false
-tasks:
-  - name: Stop a container
-    community.docker.docker_container:
-      name: config-server
-      state: stopped
+- name: Replace a container of config-server
+  hosts: all
+  become: false
+  tasks:
+    - name: Stop a container
+      community.docker.docker_container:
+        name: config-server
+        state: stopped
 
-  - name: Remove container
-    community.docker.docker_container:
-      name: config-server
-      state: absent
+    - name: Remove container
+      community.docker.docker_container:
+        name: config-server
+        state: absent
 
-  - name: Remove image
-    community.docker.docker_image:
-      state: absent
-      name: splendidpdf/config-server
-      tag: 0.0.1-SNAPSHOT
+    - name: Remove image
+      community.docker.docker_image:
+        state: absent
+        name: splendidpdf/config-server
+        tag: 0.0.1-SNAPSHOT
 
-  - name: Run config server
-    community.docker.docker_container:
-      name: config-server
-      image: splendidpdf/config-server:0.0.1-SNAPSHOT
-      state: started
-      pull: true
-      ports:
-        - "8888:8888"
+    - name: Run config server
+      community.docker.docker_container:
+        name: config-server
+        image: splendidpdf/config-server:0.0.1-SNAPSHOT
+        state: started
+        pull: true
+        ports:
+          - "8888:8888"
