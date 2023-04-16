@@ -88,8 +88,8 @@
 
     - name: Run user service
       community.docker.docker_container:
-        name: user-info-service
-        image: splendidpdf/user-info-service:0.0.1-SNAPSHOT
+        name: user-service
+        image: splendidpdf/user-service:0.0.1-SNAPSHOT
         state: started
         pull: true
         ports:
@@ -124,7 +124,7 @@
 
     - name: Run seller service
       community.docker.docker_container:
-        name: seller-service
+        name: seller-info-service
         image: splendidpdf/seller-info-service:0.0.1-SNAPSHOT
         state: started
         pull: true

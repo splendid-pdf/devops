@@ -1,0 +1,31 @@
+name: Replace a container of seller-info-service
+hosts: all
+become: false
+tasks:
+  - name: Stop a container
+    community.docker.docker_container:
+      name: seller-info-service
+      state: stopped
+
+  - name: Remove container
+    community.docker.docker_container:
+      name: seller-info-service
+      state: absent
+
+  - name: Remove image
+    community.docker.docker_image:
+      state: absent
+      name: splendidpdf/seller-info-service
+      tag: 0.0.1-SNAPSHOT
+
+  - name: Run seller service
+    community.docker.docker_container:
+      name: seller-info-service
+      image: splendidpdf/seller-info-service:0.0.1-SNAPSHOT
+      state: started
+      pull: true
+      ports:
+        - "8085:8085"
+      env:
+        SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
+        SPRING_CLOUD_CONFIG_LABEL: "develop"

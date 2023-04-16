@@ -1,0 +1,31 @@
+name: Replace a container of order-service
+hosts: all
+become: false
+tasks:
+  - name: Stop a container
+    community.docker.docker_container:
+      name: order-service
+      state: stopped
+
+  - name: Remove container
+    community.docker.docker_container:
+      name: order-service
+      state: absent
+
+  - name: Remove image
+    community.docker.docker_image:
+      state: absent
+      name: splendidpdf/order-service
+      tag: 0.0.1-SNAPSHOT
+
+  - name: Run order service
+    community.docker.docker_container:
+      name: order-service
+      image: splendidpdf/order-service:0.0.1-SNAPSHOT
+      state: started
+      pull: true
+      ports:
+        - "8081:8081"
+      env:
+        SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
+        SPRING_CLOUD_CONFIG_LABEL: "develop"
