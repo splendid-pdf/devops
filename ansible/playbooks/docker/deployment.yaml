@@ -1,42 +1,7 @@
-- name: Deployment of containers on the server
+- name: Deployment of containers on server
   hosts: all
   become: false
   tasks:
-    - name: Run postgres
-      community.docker.docker_container:
-        name: postgres
-        image: postgres:15.1-alpine
-        state: started
-        ports:
-          - "5432:5432"
-        env:
-          POSTGRES_DB: "common_db"
-          POSTGRES_USER: "user"
-          POSTGRES_PASSWORD: "password"
-          PGDATA: "/var/lib/postgresql/data"
-        volumes:
-          - "/home/data:/var/lib/postgresql/data"
-
-    - name: Run redis
-      community.docker.docker_container:
-        name: redis
-        image: redis
-        state: started
-        pull: true
-        ports:
-          - "6379:6379"
-
-    - name: Run pgadmin
-      community.docker.docker_container:
-        name: pgadmin
-        image: dpage/pgadmin4:6.19
-        state: started
-        ports:
-          - "5050:80"
-        env:
-          PGADMIN_DEFAULT_EMAIL: "main@mail.ru"
-          PGADMIN_DEFAULT_PASSWORD: "password"
-
     - name: Run config server
       community.docker.docker_container:
         name: config-server
@@ -82,7 +47,7 @@
           SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
           SPRING_CLOUD_CONFIG_LABEL: "develop"
 
-    - name: Run seller service
+    - name: Run seller-info-service
       community.docker.docker_container:
         name: seller-info-service
         image: splendidpdf/seller-info-service:0.0.1-SNAPSHOT
