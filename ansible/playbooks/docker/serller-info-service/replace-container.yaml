@@ -2,21 +2,33 @@
   hosts: all
   become: false
   tasks:
+    - name: Get infos on 'seller-info-service' container
+      docker_container_info:
+        name: seller-info-service
+      register: result
+
+    - name: Does container exist?
+      debug:
+        msg: "The container {{ 'exists' if result.exists else 'does not exist' }}"
+
     - name: Stop a container
       community.docker.docker_container:
         name: seller-info-service
         state: stopped
+      when: result.exists
 
     - name: Remove container
       community.docker.docker_container:
         name: seller-info-service
         state: absent
+      when: result.exists
 
     - name: Remove image
       community.docker.docker_image:
         state: absent
         name: splendidpdf/seller-info-service
         tag: 0.0.1-SNAPSHOT
+      when: result.exists
 
     - name: Run seller service
       community.docker.docker_container:
