@@ -26,6 +26,7 @@
         pull: true
         ports:
           - "9090:9090"
+          - "8020:8020"
         env:
           SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
           SPRING_CLOUD_CONFIG_LABEL: "develop"
