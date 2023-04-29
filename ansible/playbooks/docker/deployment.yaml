@@ -113,3 +113,13 @@
         env:
           SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
           SPRING_CLOUD_CONFIG_LABEL: "develop"
+
+    - name: Run grafana agent
+      community.docker.docker_container:
+        name: grafana-agent
+        image: grafana/agent:v0.33.0
+        state: started
+        pull: true
+        volumes:
+          - /tmp/agent:/etc/agent/data
+          - /home/marketplace/agent-config.yaml:/etc/agent/agent.yaml
