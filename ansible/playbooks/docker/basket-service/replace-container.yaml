@@ -2,30 +2,42 @@
   hosts: all
   become: false
   tasks:
+    - name: Get infos on 'basket-service' container
+      docker_container_info:
+        name: basket-service
+      register: result
+
+    - name: Does container exist?
+      debug:
+        msg: "The container {{ 'exists' if result.exists else 'does not exist' }}"
+
     - name: Stop a container
       community.docker.docker_container:
         name: basket-service
         state: stopped
+      when: result.exists
 
     - name: Remove container
       community.docker.docker_container:
         name: basket-service
         state: absent
+      when: result.exists
 
     - name: Remove image
       community.docker.docker_image:
         state: absent
         name: splendidpdf/basket-service
         tag: 0.0.1-SNAPSHOT
+      when: result.exists
 
-    - name: Run user service
+    - name: Run seller service
       community.docker.docker_container:
-        name: user-service
+        name: basket-service
         image: splendidpdf/basket-service:0.0.1-SNAPSHOT
         state: started
         pull: true
         ports:
           - "9091:9091"
         env:
-          SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888/"
+          SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
           SPRING_CLOUD_CONFIG_LABEL: "develop"
