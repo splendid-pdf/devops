@@ -19,6 +19,7 @@
         pull: true
         ports:
           - "8080:8080"
+          - "8000:8000"
         env:
           SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
           SPRING_CLOUD_CONFIG_LABEL: "develop"
@@ -31,6 +32,7 @@
         pull: true
         ports:
           - "8081:8081"
+          - "8001:8001"
         env:
           SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
           SPRING_CLOUD_CONFIG_LABEL: "develop"
@@ -43,11 +45,12 @@
         pull: true
         ports:
           - "9090:9090"
+          - "8020:8020"
         env:
           SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
           SPRING_CLOUD_CONFIG_LABEL: "develop"
 
-    - name: Run seller-info-service
+    - name: Run seller service
       community.docker.docker_container:
         name: seller-info-service
         image: splendidpdf/seller-info-service:0.0.1-SNAPSHOT
@@ -55,6 +58,7 @@
         pull: true
         ports:
           - "8085:8085"
+          - "8005:8005"
         env:
           SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
           SPRING_CLOUD_CONFIG_LABEL: "develop"
@@ -67,6 +71,7 @@
         pull: true
         ports:
           - "8082:8082"
+          - "8002:8002"
         env:
           SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
           SPRING_CLOUD_CONFIG_LABEL: "develop"
@@ -79,6 +84,7 @@
         pull: true
         ports:
           - "9001:9001"
+          - "8021:8021"
         env:
           SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
           SPRING_CLOUD_CONFIG_LABEL: "develop"
@@ -103,6 +109,17 @@
         pull: true
         ports:
           - "7777:7777"
+          - "7700:7700"
         env:
           SPRING_CONFIG_IMPORT: "configserver:http://51.250.102.12:8888"
           SPRING_CLOUD_CONFIG_LABEL: "develop"
+
+    - name: Run grafana agent
+      community.docker.docker_container:
+        name: grafana-agent
+        image: grafana/agent:v0.33.0
+        state: started
+        pull: true
+        volumes:
+          - /tmp/agent:/etc/agent/data
+          - /home/marketplace/agent-config.yaml:/etc/agent/agent.yaml
